@@ -34,12 +34,12 @@ The mSEMS can read particle pulse data from two aMCPCs: "MCPC A" (primary) and "
 
 To use the script, you will need to have Python installed along with the required libraries: pandas, numpy, xarray
 
-TODO: requirements.txt
+TODO: `requirements.txt`
 
 ### 3.1 Running the Script
 
 
-`python process_msems.py --file [path_to_data_file] --output_dir [path_to_output_directory]´
+`python process_msems.py --file [path_to_data_file] --output_dir [path_to_output_directory]`
 
-Replace [path_to_data_file] with the path to the data file you want to process, and [path_to_output_directory] with the directory where you want the converted file to be saved. The --output_dir argument is optional; if not provided, the script will save the output in the current working directory.
+Replace `[path_to_data_file]` with the path to the data file you want to process, and `[path_to_output_directory]` with the directory where you want the converted file to be saved. The --output_dir argument is optional; if not provided, the script will save the output in the current working directory.
 
