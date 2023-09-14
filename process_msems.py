@@ -11,9 +11,17 @@ import argparse
 
 def check_file_type(file_name):
     """
-    Checks if the file is a raw or processed file
+    Determine the type of the file based on specific keywords.
+    
+    Parameters:
+    - file_name (str): Path to the data file.
+    
+    Returns:
+    - file_type (str): Type of the file (e.g., 'uav', 'igor', 'raw').
+    - metadata_dict (dict): Dictionary containing metadata extracted from the file.
+    - properties (dict): Dictionary containing properties specific to the detected file type.
     """
-
+    
     # Mapping of keywords/phrases to their corresponding file types
     keyword_mapping = {
         '#UAV Reader Version': 'uav',
@@ -62,7 +70,7 @@ def check_file_type(file_name):
                         file_type.append(ftype)
     
 
-    ### JM Make sure that only one file type was found; the first one is the right one
+    # Ensure only one file type was found; use the first detected type
     file_type = file_type[0]
 
 
@@ -71,8 +79,19 @@ def check_file_type(file_name):
 
 
 def read_data(file_name, file_type, type_property_dict,):
-
-    ### JM type definitons missing
+    """
+    Read data from the file based on its type and properties.
+    
+    Parameters:
+    - file_name (str): Path to the data file.
+    - file_type (str): Type of the file.
+    - properties (dict): Dictionary containing properties specific to the file type.
+    
+    Returns:
+    - dia (pd.DataFrame): DataFrame containing diameter values.
+    - conc (pd.DataFrame): DataFrame containing concentration values.
+    - time (pd.Series): Series containing timestamp values.
+    """
 
     data = pd.read_csv(file_name, skiprows=type_property_dict['skiprows'], delimiter=type_property_dict['delimiter'])
 
@@ -101,6 +120,20 @@ def read_data(file_name, file_type, type_property_dict,):
 
 
 def data_to_netcdf(data, output_dir, filename, metadata_dict=None, file_type=None):
+    """
+    Convert data to netCDF format.
+    
+    Parameters:
+    - data (tuple): Tuple containing diameter, concentration, and timestamp data.
+    - output_dir (str): Directory to save the netCDF file.
+    - filename (str): Name of the original data file.
+    - metadata_dict (dict, optional): Dictionary containing metadata.
+    - file_type (str, optional): Type of the original file.
+    
+    Returns:
+    - xr_data (xr.DataArray): DataArray containing the converted data.
+    """
+
 
     bin, conc, time = data
     bin = np.array(bin, dtype=np.float32)
@@ -139,15 +172,12 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Converts raw, igor-inverted or uav-reader-inverted mSEMS data file to netcdf')
 
-    parser.add_argument('--file', type=str, help='Path to the data file')
-    parser.add_argument('--output_dir', type=str, help='Path to the output directory')
+    parser.add_argument('--file', type=str, required=True,help='Path to the data file')
+    parser.add_argument('--output_dir', type=str, default=os.getcwd(),help='Path to the output directory')
 
     args = parser.parse_args()
 
-    if args.output_dir is None:
-        args.output_dir = os.getcwd()        
-
-    if args.output_dir[-1] != '/':
+    if not args.output_dir.endswith('/'):
         args.output_dir += '/'
 
     
